@@ -64,8 +64,10 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext: {{- toYaml (index .Values.container "redis-cluster-proxy").securityContext | indent 12 }}
           args:
-            - --port {{ .Values.service.port }}
-            - --pidfile /tmp/redis-cluster-proxy.pid
+            - --port
+            - {{ .Values.service.port }}
+            - --pidfile
+            - /tmp/redis-cluster-proxy.pid
           {{- range $v := .Values.clusterAddresses }}
             - {{ $v | quote }}
           {{- end }}
