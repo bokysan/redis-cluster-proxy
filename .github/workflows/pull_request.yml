@@ -46,7 +46,7 @@ jobs:
           push: false
           tags: |
             boky/redis-cluster-proxy:latest
-            boky/redis-cluster-proxy:latest-alpine
+            boky/redis-cluster-proxy:latest-debian
           platforms: "linux/s390x,linux/amd64,linux/arm/v7,linux/arm64,linux/ppc64le"
           cache-from: type=local,src=/tmp/.buildx-cache/alpine
           #build-args: |
