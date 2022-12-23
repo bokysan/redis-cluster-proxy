@@ -65,7 +65,7 @@ spec:
           securityContext: {{- toYaml (index .Values.container "redis-cluster-proxy").securityContext | indent 12 }}
           args:
             - --port
-            - {{ .Values.service.port }}
+            - {{ .Values.service.port | quote }}
             - --pidfile
             - /tmp/redis-cluster-proxy.pid
           {{- range $v := .Values.clusterAddresses }}
