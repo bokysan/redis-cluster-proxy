@@ -95,7 +95,7 @@ jobs:
       - name: Copy `README.md` and `LICENCE` into the helm chart
         id: readme_and_licence
         shell: bash
-        run: cp README.md LICENSE helm/mail/
+        run: cp README.md LICENSE helm/redis-cluster-proxy/
 
       - name: Changelog
         uses: Bullrich/generate-release-changelog@master
@@ -108,12 +108,12 @@ jobs:
       - name: Package helm chart
         uses: WyriHaximus/github-action-helm3@v2
         with:
-          exec: helm package --app-version $RELEASE_VERSION --version $RELEASE_VERSION --destination ./gh-pages helm/mail
+          exec: helm package --app-version $RELEASE_VERSION --version $RELEASE_VERSION --destination ./gh-pages helm/redis-cluster-proxy
 
       - name: Create helm chart index
         uses: WyriHaximus/github-action-helm3@v2
         with:
-          exec: cd gh-pages && rm -rf .git && helm repo index . --url https://bokysan.github.io/docker-postfix
+          exec: cd gh-pages && rm -rf .git && helm repo index . --url https://bokysan.github.io/redis-cluster-proxy
       - name: Upload gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
