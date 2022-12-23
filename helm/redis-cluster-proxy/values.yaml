@@ -36,6 +36,7 @@ resources: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
+extraArgs: []
 extraInitContainers: []
 extraContainers: []
 
@@ -59,3 +60,12 @@ container:
     securityContext: {}
 
 clusterAddresses: []
+
+redisUsername:
+  secretName: ""
+  secretKey: ""
+
+redisPassword:
+  secretName: ""
+  secretKey: ""
+

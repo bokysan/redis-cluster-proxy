@@ -68,8 +68,34 @@ spec:
             - {{ .Values.service.port | quote }}
             - --pidfile
             - /tmp/redis-cluster-proxy.pid
+          {{- if and .Values.redisPassword.secretName .Values.redisPassword.secretKey }}
+            - --auth
+            - $(AUTH)
+          {{- end }}
+          {{- if and .Values.redisUsername.secretName .Values.redisUsername.secretKey }}
+            - --auth-user
+            - $(AUTH_USER)
+          {{- end }}
+          {{- range $v := .Values.extraArgs }}
+            - {{ $v | quote }}
+          {{- end }}
           {{- range $v := .Values.clusterAddresses }}
             - {{ $v | quote }}
+          {{- end }}
+          env:
+          {{- if and .Values.redisPassword.secretName .Values.redisPassword.secretKey }}
+            - name: AUTH
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redisPassword.secretName | quote }}
+                  key: {{ .Values.redisPassword.secretKey | quote }}
+          {{- end }}
+          {{- if and .Values.redisUsername.secretName .Values.redisUsername.secretKey }}
+            - name: AUTH_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redisUsername.secretName | quote }}
+                  key: {{ .Values.redisUsername.secretKey | quote }}
           {{- end }}
           ports:
             - name: redis
