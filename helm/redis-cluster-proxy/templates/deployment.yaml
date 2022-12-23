@@ -1,0 +1,82 @@
+{{- $chart := "redis-cluster-proxy" -}}
+{{- $fullName := include (print $chart ".fullname") . -}}
+{{- $labels := include (print $chart ".labels") . -}}
+{{- $reloaderAnnotations := include (print $chart ".reloader") . -}}
+{{- $selectorLabels := include (print $chart ".selectorLabels") . -}}
+{{- $checksums := include (print $chart ".checksums") . -}}
+{{- $serviceAccountName := include (print $chart ".serviceAccountName") . -}}
+{{- $kind := "Deployment" -}}
+{{- $root := . -}}
+apiVersion: apps/v1
+kind: {{ $kind | quote }}
+metadata:
+  name: {{ $fullName | quote }}
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    {{- $labels | nindent 4 }}
+    {{- with .Values.deployment.labels }}{{ toYaml . | nindent 4 }}{{ end }}
+  annotations:
+    {{- $reloaderAnnotations | nindent 4 }}
+    {{- with .Values.deployment.annotations }}{{ toYaml . | nindent 4 }}{{ end }}
+spec:
+  {{ if eq $kind "StatefulSet" }}serviceName: {{ $fullName }}{{ end }}
+  {{ if eq $kind "Deployment" }}{{ with .Values.strategy }}strategy: {{- toYaml . | nindent 4 }}{{ end }}{{ end }}
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- $selectorLabels | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- $selectorLabels | nindent 8 }}
+        {{- with .Values.pod.labels }}{{ toYaml . | nindent 8 }}{{- end }}
+      annotations:
+        {{- if .Values.recreateOnRedeploy }}
+        # https://keel.sh/docs/#helm-same-tag-force-updates
+        # Current consensus on a best way to "force" update Helm releases is by modifying your pod spec template by adding:
+        date/deploy-date: {{ now | quote }}
+        {{- end }}
+        {{- $checksums | nindent 8 }}
+        {{- with .Values.pod.annotations }}{{ toYaml . | nindent 8 }}{{ end }}
+    spec:
+      serviceAccountName: {{ $serviceAccountName | quote }}
+      {{ with .Values.imagePullSecrets }}imagePullSecrets: {{- toYaml . | nindent 8 }}{{- end }}
+      {{ if .Values.schedulerName }}schedulerName: {{ .Values.schedulerName | quote }}{{ end }}
+      {{ if .Values.priorityClassName }}priorityClassName: {{ .Values.priorityClassName | quote }}{{ end }}
+      {{ with .Values.pod.securityContext }}securityContext: {{- toYaml . | nindent 8 }}{{- end }}
+      {{ with .Values.nodeSelector }}nodeSelector: {{- toYaml . | nindent 8 }}{{- end }}
+      {{ with .Values.affinity }}affinity: {{- toYaml . | nindent 8 }} {{- end }}
+      {{ with .Values.tolerations }}tolerations: {{- toYaml . | nindent 8 }} {{- end }}
+
+      {{- if .Values.extraInitContainers }}
+      #
+      # Init containers
+      #
+      initContainers:
+      {{- tpl .Values.extraInitContainers . | nindent 6 }}
+      {{- end }}
+
+      # Allow up to 2 minutes for Postfix to flush / empty the queue  before shutting down the container
+      terminationGracePeriodSeconds: 120
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext: {{- toYaml (index .Values.container "redis-cluster-proxy").securityContext | indent 12 }}
+          args:
+            - --port {{ .Values.service.port }}
+            - --pidfile /tmp/redis-cluster-proxy.pid
+          {{- range $v := .Values.clusterAddresses }}
+            - {{ $v | quote }}
+          {{- end }}
+          ports:
+            - name: smtp
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          {{ with .Values.readinessProbe }}readinessProbe: {{- toYaml . | nindent 12 }}{{ end }}
+          {{ with .Values.livenessProbe }}livenessProbe: {{- toYaml . | nindent 12 }}{{ end }}
+          {{ with .Values.startupProbe }}startupProbe: {{- toYaml . | nindent 12 }}{{ end }}
+          resources: {{ toYaml .Values.resources | nindent 12 }}
+        {{- if .Values.extraContainers }}
+        {{- tpl .Values.extraContainers $root | nindent 8 }}
+        {{- end }}

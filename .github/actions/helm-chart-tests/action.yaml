@@ -1,0 +1,9 @@
+name: 'Helm chart tests'
+description: 'Execute Helm chart tests'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run HELM chart tests
+      shell: bash
+      run: ./helm/tests.sh

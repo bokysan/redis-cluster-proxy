@@ -1,0 +1,7 @@
+.idea
+.vscode
+*.bak
+cache
+dist
+helm
+build.sh

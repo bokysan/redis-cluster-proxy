@@ -1,0 +1,16 @@
+name: 'Setup docker buildx'
+description: 'Setup docker buildx'
+
+inputs:
+  DOCKER_ACCESS_TOKEN:
+    description: 'DOCKER_ACCESS_TOKEN'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Login to DockerHub
+      uses: docker/login-action@v1
+      with:
+        username: 'boky'
+        password: '${{ inputs.DOCKER_ACCESS_TOKEN }}'
