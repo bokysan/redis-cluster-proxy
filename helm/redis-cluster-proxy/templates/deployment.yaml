@@ -72,7 +72,7 @@ spec:
             - {{ $v | quote }}
           {{- end }}
           ports:
-            - name: smtp
+            - name: redis
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           {{ with .Values.readinessProbe }}readinessProbe: {{- toYaml . | nindent 12 }}{{ end }}
