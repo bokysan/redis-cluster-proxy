@@ -2,8 +2,26 @@ apiVersion: v1
 entries:
   redis-cluster-proxy:
   - apiVersion: v2
+    appVersion: v1.0.4
+    created: "2022-12-23T12:54:58.649390962Z"
+    description: An outgoing SMTP redis-cluster-proxy relay for your applications
+      in Kubernetes cluster
+    digest: ab2790d701bd52e284161e7182a05973b30fa3088e65bc9025b10e15ee90e626
+    home: https://github.com/bokysan/docker-postfix
+    icon: https://bokysan.github.io/docker-postfix/postfix.png
+    maintainers:
+    - name: Bokysan
+      url: https://github.com/bokysan
+    name: redis-cluster-proxy
+    sources:
+    - https://github.com/bokysan/docker-postfix
+    type: application
+    urls:
+    - https://bokysan.github.io/redis-cluster-proxy/redis-cluster-proxy-v1.0.4.tgz
+    version: v1.0.4
+  - apiVersion: v2
     appVersion: v1.0.3
-    created: "2022-12-23T12:54:07.947233522Z"
+    created: "2022-12-23T12:54:58.648895143Z"
     description: An outgoing SMTP redis-cluster-proxy relay for your applications
       in Kubernetes cluster
     digest: 89b240b96e16e2fd485ed5dc2f4d083ee0dbbd55fc9878f7bae4d9d94c4d34da
@@ -21,7 +39,7 @@ entries:
     version: v1.0.3
   - apiVersion: v2
     appVersion: v1.0.2
-    created: "2022-12-23T12:54:07.946593821Z"
+    created: "2022-12-23T12:54:58.648367323Z"
     description: An outgoing SMTP redis-cluster-proxy relay for your applications
       in Kubernetes cluster
     digest: 79ad40ae6955399ad1a274987bd99c78461295aea41c1bea57d84f0e6f41a14c
@@ -39,7 +57,7 @@ entries:
     version: v1.0.2
   - apiVersion: v2
     appVersion: v1.0.1
-    created: "2022-12-23T12:54:07.94599092Z"
+    created: "2022-12-23T12:54:58.647900906Z"
     description: An outgoing SMTP redis-cluster-proxy relay for your applications
       in Kubernetes cluster
     digest: 0a0968443271bbb6f27597ee11191bd168b5db303d8404e04bd0a028a0bb7cc2
@@ -55,4 +73,4 @@ entries:
     urls:
     - https://bokysan.github.io/redis-cluster-proxy/redis-cluster-proxy-v1.0.1.tgz
     version: v1.0.1
-generated: "2022-12-23T12:54:07.945220418Z"
+generated: "2022-12-23T12:54:58.647243181Z"
